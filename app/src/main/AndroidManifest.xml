@@ -18,7 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ColorActivity">
+        <activity android:name=".ColorActivity" android:parentActivityName=".PalletteActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                       android:value="com.example.armin.color_pallette.PalletteActivity"></meta-data>
         </activity>
     </application>
 

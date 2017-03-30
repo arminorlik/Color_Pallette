@@ -6,11 +6,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 public class PalletteActivity extends AppCompatActivity {
+
+    public static final String LOG_CAT = PalletteActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,38 @@ public class PalletteActivity extends AppCompatActivity {
 
             }
         });
+        Log.d(LOG_CAT, "onCreate");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(LOG_CAT, "onDestroy");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(LOG_CAT, "onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(LOG_CAT, "onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(LOG_CAT, "onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(LOG_CAT, "onResume");
+        super.onResume();
     }
 
     private void addColor() {
