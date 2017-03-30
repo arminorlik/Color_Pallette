@@ -1,10 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.armin.color_pallette.ColorActivity">
+<LinearLayout android:id="@+id/idLinearLayout"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.example.armin.color_pallette.ColorActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        style="@style/TextView_Style"
+        android:text="@string/red"/>
+
+    <SeekBar
+        android:id="@+id/redSeekBar"
+        style="@style/SeekBar_Style"/>
+
+
+    <TextView
+        style="@style/TextView_Style"
+        android:text="@string/green"/>
+
+    <SeekBar
+        android:id="@+id/greenSeekBar"
+
+        style="@style/SeekBar_Style"/>
+
+
+    <TextView
+        style="@style/TextView_Style"
+        android:text="@string/blue"/>
+
+    <SeekBar
+        android:id="@+id/blueSeekBar"
+
+        style="@style/SeekBar_Style"/>
+
+    <Button
+        android:id="@+id/generateButton"
+
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/generate"/>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="@string/save"/>
+
+</LinearLayout>

@@ -1,67 +1,129 @@
 package com.example.armin.color_pallette;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
-public class ColorActivity extends AppCompatActivity {
+import java.util.Random;
 
-    public static final String LOG_CAT = ColorActivity.class.getSimpleName();
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+
+    @BindView(R.id.redSeekBar)
+    SeekBar redSeekBar;
+    @BindView(R.id.greenSeekBar)
+    SeekBar greenSeekBar;
+    @BindView(R.id.blueSeekBar)
+    SeekBar blueSeekBar;
+    @BindView(R.id.generateButton)
+    Button generateButton;
+    @BindView(R.id.saveButton)
+    Button saveButton;
+    @BindView(R.id.idLinearLayout)
+    LinearLayout idLinearLayout;
     private ActionBar actionBar;
+    Random random = new Random();
+    private int red;
+    private int blue;
+    private int green;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color);
+        ButterKnife.bind(this);
+
         actionBar = getSupportActionBar();
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
-        Log.d(LOG_CAT, "onCreate");
 
+        redSeekBar.setOnSeekBarChangeListener(this);
+        blueSeekBar.setOnSeekBarChangeListener(this);
+        greenSeekBar.setOnSeekBarChangeListener(this);
     }
 
+    @OnClick(R.id.generateButton)
+    public void generate() {
 
+        red = random.nextInt(256);
+        green = random.nextInt(256);
+        blue = random.nextInt(256);
 
+        redSeekBar.setProgress(red);
+        greenSeekBar.setProgress(green);
+        blueSeekBar.setProgress(blue);
 
-    @Override
-    protected void onDestroy() {
-        Log.d(LOG_CAT, "onDestroy");
-        super.onDestroy();
+        updateBackgroundColor();
     }
 
-    @Override
-    protected void onStart() {
-        Log.d(LOG_CAT, "onStart");
-        super.onStart();
+    private void updateBackgroundColor() {
+        int color = Color.rgb(red, green, blue);
+
+        idLinearLayout.setBackgroundColor(color);
     }
 
-    @Override
-    protected void onStop() {
-        Log.d(LOG_CAT, "onStop");
-        super.onStop();
-    }
+    @OnClick(R.id.saveButton)
+    public void save() {
 
-    @Override
-    protected void onPause() {
-        Log.d(LOG_CAT, "onPause");
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.d(LOG_CAT, "onResume");
-        super.onResume();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        switch (seekBar.getId()) {
+            case R.id.redSeekBar:
+                red = i;
+                break;
+            case R.id.blueSeekBar:
+                blue = i;
+                break;
+            case R.id.greenSeekBar:
+                green = i;
+                break;
+        }
+        updateBackgroundColor();
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("blue", blue);
+        outState.putInt("green", green);
+        outState.putInt("red", red);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        blue = savedInstanceState.getInt("blue");
+        red = savedInstanceState.getInt("red");
+        green = savedInstanceState.getInt("green");
     }
 }
