@@ -1,5 +1,6 @@
 package com.example.armin.color_pallette;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -18,6 +19,7 @@ import butterknife.OnClick;
 
 public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
+    public static final String COLOR_IN_HEX = "COLOR_IN_HEX";
     @BindView(R.id.redSeekBar)
     SeekBar redSeekBar;
     @BindView(R.id.greenSeekBar)
@@ -72,7 +74,10 @@ public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBa
 
     @OnClick(R.id.saveButton)
     public void save() {
-
+        Intent intent = new Intent();
+        intent.putExtra(COLOR_IN_HEX, String.format("#%02X%02X%02X", red,green,blue));
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override

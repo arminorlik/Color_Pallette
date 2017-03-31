@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +13,8 @@ import android.view.View;
 public class PalletteActivity extends AppCompatActivity {
 
     public static final String LOG_CAT = PalletteActivity.class.getSimpleName();
+    public static final int REQUEST_CODE_CREATE = 1;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,53 +23,30 @@ public class PalletteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                addColor();
 
+                addColor();
             }
         });
-        Log.d(LOG_CAT, "onCreate");
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.d(LOG_CAT, "onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onStart() {
-        Log.d(LOG_CAT, "onStart");
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        Log.d(LOG_CAT, "onStop");
-        super.onStop();
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d(LOG_CAT, "onPause");
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.d(LOG_CAT, "onResume");
-        super.onResume();
     }
 
     private void addColor() {
         Intent intent = new Intent(PalletteActivity.this, ColorActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_CREATE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CREATE && resultCode == RESULT_OK) {
+            String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX);
+            Snackbar.make(fab, getString(R.string.new_color_created, colorHEX), Snackbar.LENGTH_LONG)
+                    .show();
+
+        }
     }
 
     @Override
@@ -89,11 +67,9 @@ public class PalletteActivity extends AppCompatActivity {
         if (id == R.id.action_add) {
             addColor();
             return true;
-        }else  if (id == R.id.action_clear){
+        } else if (id == R.id.action_clear) {
 
         }
-
-
 
         return super.onOptionsItemSelected(item);
     }
