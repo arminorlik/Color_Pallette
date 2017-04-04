@@ -16,11 +16,12 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PalletteActivity extends AppCompatActivity {
+public class PalletteActivity extends AppCompatActivity implements ColorAdapter.ColorClickedListener {
 
     public static final String LOG_CAT = PalletteActivity.class.getSimpleName();
     public static final int REQUEST_CODE_CREATE = 1;
-    @BindView(R.id.colorRecyclerView)
+    public static final int REQUEST_CODE_EDIT = 2;
+    @BindView(com.example.armin.color_pallette.R.id.colorRecyclerView)
     RecyclerView colorRecyclerView;
     private FloatingActionButton fab;
     private ColorAdapter colorAdapter;
@@ -28,13 +29,13 @@ public class PalletteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pallette);
+        setContentView(com.example.armin.color_pallette.R.layout.activity_pallette);
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(com.example.armin.color_pallette.R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(com.example.armin.color_pallette.R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +45,7 @@ public class PalletteActivity extends AppCompatActivity {
         });
 
         colorAdapter = new ColorAdapter(getLayoutInflater());
+        colorAdapter.setColorClickedListener(this);
         colorRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         colorRecyclerView.setAdapter(colorAdapter);
 
@@ -59,7 +61,6 @@ public class PalletteActivity extends AppCompatActivity {
 
                 int position = viewHolder.getAdapterPosition();
                 colorAdapter.remove(position);
-
             }
         };
 
@@ -75,19 +76,27 @@ public class PalletteActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_CREATE && resultCode == RESULT_OK) {
-            String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX);
-            Snackbar.make(fab, getString(R.string.new_color_created, colorHEX), Snackbar.LENGTH_LONG)
-                    .show();
-            colorAdapter.add(colorHEX);
-        }
 
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == REQUEST_CODE_CREATE) {
+                String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX_KEY);
+                Snackbar.make(fab, getString(com.example.armin.color_pallette.R.string.new_color_created, colorHEX), Snackbar.LENGTH_LONG)
+                        .show();
+                colorAdapter.add(colorHEX);
+            }else if (requestCode == REQUEST_CODE_EDIT){
+                String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX_KEY);
+                String oldColor = data.getStringExtra(ColorActivity.OLD_COLOR_KEY);
+
+                colorAdapter.replace(oldColor, colorHEX);
+            }
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_pallette, menu);
+        getMenuInflater().inflate(com.example.armin.color_pallette.R.menu.menu_pallette, menu);
         return true;
     }
 
@@ -99,13 +108,20 @@ public class PalletteActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_add) {
+        if (id == com.example.armin.color_pallette.R.id.action_add) {
             addColor();
             return true;
-        } else if (id == R.id.action_clear) {
+        } else if (id == com.example.armin.color_pallette.R.id.action_clear) {
 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onColorClicked(String colorInHex) {
+        Intent intent = new Intent(this, ColorActivity.class);
+        intent.putExtra(ColorActivity.OLD_COLOR_KEY, colorInHex);
+        startActivityForResult(intent, REQUEST_CODE_EDIT);
     }
 }
