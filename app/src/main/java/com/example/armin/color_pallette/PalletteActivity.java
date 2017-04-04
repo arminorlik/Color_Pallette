@@ -5,21 +5,32 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class PalletteActivity extends AppCompatActivity {
 
     public static final String LOG_CAT = PalletteActivity.class.getSimpleName();
     public static final int REQUEST_CODE_CREATE = 1;
+    @BindView(R.id.colorRecyclerView)
+    RecyclerView colorRecyclerView;
     private FloatingActionButton fab;
+    private ColorAdapter colorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pallette);
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -31,6 +42,29 @@ public class PalletteActivity extends AppCompatActivity {
                 addColor();
             }
         });
+
+        colorAdapter = new ColorAdapter(getLayoutInflater());
+        colorRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        colorRecyclerView.setAdapter(colorAdapter);
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                int position = viewHolder.getAdapterPosition();
+                colorAdapter.remove(position);
+
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(colorRecyclerView);
     }
 
     private void addColor() {
@@ -45,8 +79,9 @@ public class PalletteActivity extends AppCompatActivity {
             String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX);
             Snackbar.make(fab, getString(R.string.new_color_created, colorHEX), Snackbar.LENGTH_LONG)
                     .show();
-
+            colorAdapter.add(colorHEX);
         }
+
     }
 
     @Override
