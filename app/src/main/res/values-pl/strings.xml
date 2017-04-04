@@ -7,4 +7,6 @@
     <string name="save">Zapisz</string>
     <string name="green">Zielony</string>
     <string name="action_clear">Wyczyść wszystko</string>
+    <string name="edit_color">Edytuj Kolor</string>
+    <string name="undo">Cofnij</string>
 </resources>

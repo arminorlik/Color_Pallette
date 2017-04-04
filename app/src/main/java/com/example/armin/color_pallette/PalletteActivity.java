@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -83,9 +84,18 @@ public class PalletteActivity extends AppCompatActivity implements ColorAdapter.
 
             if (requestCode == REQUEST_CODE_CREATE) {
                 String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX_KEY);
-                Snackbar.make(fab, getString(com.example.armin.color_pallette.R.string.new_color_created, colorHEX), Snackbar.LENGTH_LONG)
+                final int position = colorAdapter.add(colorHEX);
+
+                Snackbar.make(fab, getString(R.string.new_color_created, colorHEX), Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                colorAdapter.remove(position);
+                                colorAdapter.notifyItemRemoved(position);
+                            }
+                        })
                         .show();
-                colorAdapter.add(colorHEX);
             } else if (requestCode == REQUEST_CODE_EDIT) {
                 String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX_KEY);
                 String oldColor = data.getStringExtra(ColorActivity.OLD_COLOR_KEY);
@@ -125,5 +135,9 @@ public class PalletteActivity extends AppCompatActivity implements ColorAdapter.
         Intent intent = new Intent(this, ColorActivity.class);
         intent.putExtra(ColorActivity.OLD_COLOR_KEY, colorInHex);
         startActivityForResult(intent, REQUEST_CODE_EDIT);
+    }
+
+    public static int getTextColorFromColor(int color){
+        return new Palette.Swatch(color, 1).getTitleTextColor();
     }
 }

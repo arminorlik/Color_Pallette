@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import java.util.Random;
 
@@ -34,6 +35,12 @@ public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     Button saveButton;
     @BindView(R.id.idLinearLayout)
     LinearLayout idLinearLayout;
+    @BindView(R.id.redSeekBartv)
+    TextView redSeekBartv;
+    @BindView(R.id.greenSeekBartv)
+    TextView greenSeekBartv;
+    @BindView(R.id.blueSeekBartv)
+    TextView blueSeekBartv;
     private ActionBar actionBar;
     Random random = new Random();
     private int red;
@@ -56,7 +63,7 @@ public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         Intent intent = getIntent();
         oldColor = intent.getStringExtra(OLD_COLOR_KEY);
 
-        if (oldColor != null){
+        if (oldColor != null) {
             int color = Color.parseColor(oldColor);
             red = Color.red(color);
             blue = Color.blue(color);
@@ -66,9 +73,8 @@ public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBa
             updateBackgroundColor();
 
             generateButton.setVisibility(View.GONE);
-
+            actionBar.setTitle(R.string.edit_color);
         }
-
     }
 
     @OnClick(R.id.generateButton)
@@ -91,6 +97,11 @@ public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBa
 
     private void updateBackgroundColor() {
         int color = Color.rgb(red, green, blue);
+        int textColor = PalletteActivity.getTextColorFromColor(color);
+
+        blueSeekBartv.setTextColor(textColor);
+        greenSeekBartv.setTextColor(textColor);
+        redSeekBartv.setTextColor(textColor);
 
         idLinearLayout.setBackgroundColor(color);
     }
@@ -98,8 +109,8 @@ public class ColorActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     @OnClick(R.id.saveButton)
     public void save() {
         Intent intent = new Intent();
-        intent.putExtra(COLOR_IN_HEX_KEY, String.format("#%02X%02X%02X", red,green,blue));
-        if (oldColor != null){
+        intent.putExtra(COLOR_IN_HEX_KEY, String.format("#%02X%02X%02X", red, green, blue));
+        if (oldColor != null) {
             intent.putExtra(OLD_COLOR_KEY, oldColor);
         }
         setResult(RESULT_OK, intent);

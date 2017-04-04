@@ -25,6 +25,7 @@ class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
     private final SharedPreferences sharedPreferences;
     private List<String> colors = new ArrayList<>();
     private ColorClickedListener colorClickedListener;
+    private int position;
 
     public ColorAdapter(LayoutInflater layoutInflater, SharedPreferences sharedPreferences) {
         this.layoutInflater = layoutInflater;
@@ -63,11 +64,13 @@ class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
         return colors.size();
     }
 
-    public void add(String color) {
+    public int add(String color) {
         colors.add(color);
-        notifyItemInserted(colors.size() - 1);
+        position = colors.size() - 1;
+        notifyItemInserted(position);
 
         storeInPreferences();
+        return position;
     }
 
     private void storeInPreferences() {
@@ -127,6 +130,7 @@ class ColorViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
     private String color;
     private TextView textView;
     private final ColorAdapter colorAdapter;
+    private int backgroundColor;
 
     public ColorViewHolder(View itemView, ColorAdapter colorAdapter) {
         super(itemView);
@@ -134,12 +138,17 @@ class ColorViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         textView = (TextView) itemView;
         this.colorAdapter = colorAdapter;
         textView.setOnClickListener(this);
+
+
     }
 
     public void setColor(String color) {
         this.color = color;
         textView.setText(color);
-        textView.setBackgroundColor(Color.parseColor(color));
+        backgroundColor = Color.parseColor(color);
+        textView.setBackgroundColor(backgroundColor);
+        textView.setTextColor(PalletteActivity.getTextColorFromColor(backgroundColor));
+
     }
 
     public String getColor() {
