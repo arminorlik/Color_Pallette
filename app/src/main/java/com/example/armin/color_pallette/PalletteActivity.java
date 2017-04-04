@@ -2,6 +2,7 @@ package com.example.armin.color_pallette;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +45,8 @@ public class PalletteActivity extends AppCompatActivity implements ColorAdapter.
             }
         });
 
-        colorAdapter = new ColorAdapter(getLayoutInflater());
+        colorAdapter = new ColorAdapter(getLayoutInflater(),
+                PreferenceManager.getDefaultSharedPreferences(this));
         colorAdapter.setColorClickedListener(this);
         colorRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         colorRecyclerView.setAdapter(colorAdapter);
@@ -84,7 +86,7 @@ public class PalletteActivity extends AppCompatActivity implements ColorAdapter.
                 Snackbar.make(fab, getString(com.example.armin.color_pallette.R.string.new_color_created, colorHEX), Snackbar.LENGTH_LONG)
                         .show();
                 colorAdapter.add(colorHEX);
-            }else if (requestCode == REQUEST_CODE_EDIT){
+            } else if (requestCode == REQUEST_CODE_EDIT) {
                 String colorHEX = data.getStringExtra(ColorActivity.COLOR_IN_HEX_KEY);
                 String oldColor = data.getStringExtra(ColorActivity.OLD_COLOR_KEY);
 
@@ -112,7 +114,7 @@ public class PalletteActivity extends AppCompatActivity implements ColorAdapter.
             addColor();
             return true;
         } else if (id == com.example.armin.color_pallette.R.id.action_clear) {
-
+            colorAdapter.clear();
         }
 
         return super.onOptionsItemSelected(item);
